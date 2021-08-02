@@ -17,8 +17,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-       if (Input.GetKeyDown(KeyCode.Space)) {
-            SM.SetState<StasisDetection>();
+       if (Input.GetMouseButtonDown(1)) {
+            SM.SetState<Stasis>();
         }
     }
 
