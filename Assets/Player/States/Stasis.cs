@@ -65,7 +65,8 @@ public class Stasis : MonoBehaviour, IState
         }
 
         if (!Input.GetMouseButton(1)) {
-            StasisActivate();
+            if (!isOnCooldown)
+                StasisActivate();
             SM.SetState<Movement>();
         }
 
@@ -77,7 +78,12 @@ public class Stasis : MonoBehaviour, IState
             if (mat.HasColor("_Color")) { // if the material has a "Main Color"
                 Color prev_color = mat.color;
                 mat.color = Color.yellow;
-                while (Physics.Raycast(MainCamera.transform.position, MainCamera.transform.forward, Mathf.Infinity, layerMask) && SM.getCurrState() is Stasis) {
+                while (Physics.Raycast(MainCamera.transform.position, MainCamera.transform.forward, out hit, Mathf.Infinity, layerMask) && SM.getCurrState() is Stasis) {
+                    if (hit.collider != null && hit.collider.gameObject != obj) { // if we've hovered over a different gameobject while looking at the current one
+                        mat.color = prev_color;
+                        shouldCheckStasisRay = true;
+                        yield break;
+                    }
                     yield return null;
                 }
                 shouldCheckStasisRay = true; // once you aim off of the object, use the raycast from OnUpdate
@@ -92,48 +98,56 @@ public class Stasis : MonoBehaviour, IState
         }
     }
 
+    List<Material> tmp_material_list = new List<Material>(); // use list so we only allocate this once. Material is a class (reference type) so doing array stuff here is pretty fast
+
     IEnumerator ApplyStasis(GameObject obj) {
-        Renderer obj_rend = obj.GetComponent<Renderer>();
-        if (obj_rend.sharedMaterial.shader.name == stasisMaterial.shader.name) yield break;
         isOnCooldown = true;
 
+        Renderer obj_rend = obj.GetComponent<Renderer>();
         Rigidbody rb = obj.GetComponent<Rigidbody>();
-        Material prev = obj_rend.material;
 
-        if (stasisStartParticles.Count != 0) { // if there are any particle systems in the list
-            foreach (ParticleSystem PS in stasisStartParticles) {
-                PS.gameObject.transform.position = obj.transform.position;
-                PS.Play();
-            }
+        if (obj_rend == null || rb == null) {
+            Debug.Log("Object is not suitable for stasis!");
+            yield break;
         }
 
-        // Checking these individually looks icky, but if an object has *either* an rb or a renderer, then it'll handle only that part properly
+        obj_rend.GetMaterials(tmp_material_list); // populate list with materials
 
-        if (obj_rend != null) 
-            obj_rend.material = stasisMaterial;
-        if (rb != null)
-            rb.isKinematic = true;
+        handleParticleSystems(stasisStartParticles, obj, true);
+
+        // -------- Checking these individually looks icky, but if an object has *either* an rb or a renderer, then it'll handle only that part properly
+
+        tmp_material_list.Add(stasisMaterial);
+        obj_rend.materials = tmp_material_list.ToArray();
+        rb.isKinematic = true;
 
         yield return new WaitForSeconds(stasisSeconds);
 
-        if (rb != null)
-            rb.isKinematic = false;
-        if (obj_rend != null)
-            obj_rend.material = prev;
+        rb.isKinematic = false;
+        tmp_material_list.RemoveAt(tmp_material_list.Count -1); // pop from back
+        obj_rend.materials = tmp_material_list.ToArray();
+
+        // --------------------------------------------------
         
-        if (stasisStartParticles.Count != 0) {
-            foreach (ParticleSystem PS in stasisStartParticles) {
-                PS.Stop();
-            }
-        }
-        if (stasisEndParticles.Count != 0) {
-            foreach(ParticleSystem PS in stasisEndParticles)
+        handleParticleSystems(stasisStartParticles, obj, false);
+        handleParticleSystems(stasisEndParticles, obj, true);
+        tmp_material_list.Clear();
+        
+    }
+
+    void handleParticleSystems(List<ParticleSystem> particleSystems, GameObject source, bool on_off) {
+        if (particleSystems.Count != 0) {
+            foreach(ParticleSystem PS in particleSystems)
             {
-                PS.gameObject.transform.position = obj.transform.position;
-                PS.Play();
+                if (on_off) {
+                    PS.gameObject.transform.position = source.transform.position;
+                    PS.Play();
+                }
+                else {
+                    PS.Stop();
+                }
             }
         }
-        
     }
 
     // tween cinemachine camera zoom to simulate aiming over shoulder
