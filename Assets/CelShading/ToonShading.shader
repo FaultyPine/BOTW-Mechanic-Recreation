@@ -4,6 +4,7 @@ Shader "Pine/ToonShading"
     {
         _MainTex ("Texture", 2D) = "white" {}
         [MainColor] _Color ("Main Color", Color) = (1,1,1,1)
+        _GradientTex("Gradient Texture", 2D) = "white" {}
         [HDR] _AmbientColor ("Ambient Color", Color) = (0.4, 0.4, 0.4, 1)
         [HDR] _SpecularColor ("Specular Color", Color) = (0.9, 0.9, 0.9, 1)
         _Glossiness ("Glossiness", Range(0, 100)) = 32
@@ -27,7 +28,7 @@ Shader "Pine/ToonShading"
             #pragma vertex vert
             #pragma fragment frag
            	#pragma multi_compile_fwdbase
-            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _MAIN_LIGHT_SHADOWS
 
 
             //#include "UnityCG.cginc"
@@ -51,6 +52,7 @@ Shader "Pine/ToonShading"
             };
 
             sampler2D _MainTex;
+            sampler2D _GradientTex;
             float4 _MainTex_ST;
             float4 _Color;
             float4 _AmbientColor;
@@ -86,7 +88,8 @@ Shader "Pine/ToonShading"
 
                 /* Diffuse */
                 float NDotL = max(0, dot(N, L)); // Normal • Light direction
-                float lightIntensity = smoothstep(0, 0.1, NDotL * shadow);;
+                float lightIntensity = smoothstep(0, 0.1, NDotL * shadow);
+                //float lightIntensity = tex2D(_GradientTex, NDotL * shadow).r;
                 float4 light = lightIntensity * mainLightColor;
 
                 /* Specular */
@@ -97,7 +100,7 @@ Shader "Pine/ToonShading"
                 float4 specular = specularIntensitySmooth * _SpecularColor;
 
                 /* Rim Lighting (Fresnel) */
-                float4 rimDot = 1 - dot(viewDir, N);
+                float rimDot = 1 - dot(viewDir, N);
                 float rimIntensity = rimDot * pow(NDotL, _RimThreshold); // only apply fresnel where object is already illuminated
                 rimIntensity = smoothstep(_RimAmount - 0.01, _RimAmount + 0.01, rimIntensity);
                 float4 rim = rimIntensity * _RimColor;
