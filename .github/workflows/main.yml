@@ -54,7 +54,20 @@ jobs:
           versioning: None
 
       # Output
-      - uses: actions/upload-artifact@v2
+      #- uses: actions/upload-artifact@v2
+      #  with:
+      #    name: Build
+      #    path: build
+          
+      - name: Release
+        id: releasestep
+        run: |
+            zip Build
+        uses: softprops/action-gh-release@v1
         with:
-          name: Build
-          path: build
+          files: Build.zip
+          
+        - uses: sarisia/actions-status-discord@v1
+          with:
+            webhook: ${{ secrets.DISCORD_WEBHOOK }}
+            content: "Uploaded build: ${{ steps.releasestep.outputs.url }}"
