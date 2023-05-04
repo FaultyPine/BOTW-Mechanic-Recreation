@@ -68,6 +68,6 @@ jobs:
           files: Build.zip
           
         uses: sarisia/actions-status-discord@v1
-          with:
-            webhook: ${{ secrets.DISCORD_WEBHOOK }}
-            content: "Uploaded build: ${{ steps.releasestep.outputs.url }}"
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          content: "Uploaded build: ${{ steps.releasestep.outputs.url }}"
