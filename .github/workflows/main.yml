@@ -20,13 +20,13 @@ jobs:
           private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       
       - name: clone repo
-        run: git clone git@gitlab.com:FaultyPine/BOTW-Mechanic-Recreation.git .
+        run: git clone git@gitlab.com:FaultyPine/BOTW-Mechanic-Recreation.git
       - name: repo ls
         run: ls
       # Cache
       - uses: actions/cache@v2
         with:
-          path: Library
+          path: BOTW-Mechanic-Recreation/Library
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
             Library-
@@ -50,6 +50,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: StandaloneWindows
+          projectPath: BOTW-Mechanic-Recreation
 
       # Output
       - uses: actions/upload-artifact@v2
