@@ -22,7 +22,7 @@ jobs:
       - name: clone repo
         run: git clone git@gitlab.com:FaultyPine/BOTW-Mechanic-Recreation.git
       - name: repo ls
-        run: ls
+        run: ls && cd BOTW-Mechanic-Recreation
       # Cache
       - uses: actions/cache@v2
         with:
