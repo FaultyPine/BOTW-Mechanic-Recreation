@@ -4,16 +4,19 @@ on: [push, pull_request]
 
 jobs:
   build:
-    name: Build my project
+    name: Build
     runs-on: ubuntu-latest
     steps:
       # Checkout
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          lfs: true
+      #- name: Checkout repository
+      #  uses: actions/checkout@v2
+      #  with:
+      #    lfs: true
+      - name: clone repo
+        run: git clone https://gitlab.com/FaultyPine/BOTW-Mechanic-Recreation.git
 
       # Cache
+      - name: cache
       - uses: actions/cache@v2
         with:
           path: Library
@@ -29,6 +32,7 @@ jobs:
       #  with:
       #    githubToken: ${{ secrets.GITHUB_TOKEN }}
 
+
       # Build
       - name: Build project
         uses: game-ci/unity-builder@v2
@@ -39,6 +43,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: StandaloneWindows
+          buildName: ${{ github.event.repository.name }}
 
       # Output
       - uses: actions/upload-artifact@v2
