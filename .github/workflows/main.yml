@@ -20,9 +20,9 @@ jobs:
           private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       
       - name: clone repo
-        run: git clone git@gitlab.com:FaultyPine/BOTW-Mechanic-Recreation.git
+        run: git clone git@gitlab.com:FaultyPine/BOTW-Mechanic-Recreation.git .
       - name: repo ls
-        run: ls && cd BOTW-Mechanic-Recreation
+        run: ls
       # Cache
       - uses: actions/cache@v2
         with:
