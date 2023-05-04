@@ -14,8 +14,8 @@ jobs:
       #    lfs: true
       
       - name: Setup SSH
-      uses: MrSquaare/ssh-setup-action@v1
-      with:
+        uses: MrSquaare/ssh-setup-action@v1
+        with:
           host: github.com
           private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       
