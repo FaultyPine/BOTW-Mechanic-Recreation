@@ -13,7 +13,7 @@ jobs:
       #  with:
       #    lfs: true
       - name: clone repo
-        run: git clone https://gitlab.com/FaultyPine/BOTW-Mechanic-Recreation.git
+        run: git clone git@gitlab.com:FaultyPine/BOTW-Mechanic-Recreation.git
 
       # Cache
       - uses: actions/cache@v2
