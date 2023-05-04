@@ -26,7 +26,7 @@ jobs:
       # Cache
       - uses: actions/cache@v2
         with:
-          path: BOTW-Mechanic-Recreation/Library
+          path: Library
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
             Library-
@@ -51,6 +51,7 @@ jobs:
         with:
           targetPlatform: StandaloneWindows
           projectPath: BOTW-Mechanic-Recreation
+          versioning: None
 
       # Output
       - uses: actions/upload-artifact@v2
