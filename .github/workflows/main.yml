@@ -71,6 +71,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: Build.zip
+          tag_name: "Build"
           
       - name: Discord post   
         uses: sarisia/actions-status-discord@v1
