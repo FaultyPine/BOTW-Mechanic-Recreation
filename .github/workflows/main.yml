@@ -61,7 +61,7 @@ jobs:
           
       - name: Zip build
         run: |
-            zip Build
+            zip BOTW-Mechanic-Recreation/Build
           
       - name: Release
         id: releasestep
