@@ -59,14 +59,17 @@ jobs:
       #    name: Build
       #    path: build
           
+      - name: Zip build
+        run: |
+            zip Build
+          
       - name: Release
         id: releasestep
-        run: |
-            zip BOTW-Mechanic-Recreation/Build
         uses: softprops/action-gh-release@v1
         with:
           files: Build.zip
           
+      - name: Discord post   
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
