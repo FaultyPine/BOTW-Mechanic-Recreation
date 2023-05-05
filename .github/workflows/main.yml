@@ -62,7 +62,7 @@ jobs:
       - name: Release
         id: releasestep
         run: |
-            zip Build
+            zip BOTW-Mechanic-Recreation/Build
         uses: softprops/action-gh-release@v1
         with:
           files: Build.zip
