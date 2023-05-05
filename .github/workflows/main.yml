@@ -66,13 +66,16 @@ jobs:
             zip -r Build.zip build
             ls
           
-      - uses: ncipollo/release-action@v1
+      - name: Release
         id: releasestep
+        uses: softprops/action-gh-release@v1
         with:
-          artifacts: "Build.zip"
+          files: Build.zip
+          tag_name: "Automatic Build"
           
       - name: Discord post   
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          content: "Uploaded build: ${{ steps.releasestep.outputs.html_url }}"
+          content: "Download build here: ${{ steps.releasestep.outputs.url }}"
+          nodetail: true
