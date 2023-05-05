@@ -63,7 +63,8 @@ jobs:
         run: |
             ls
             find . -type d | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/| - \1/"
-            zip -r Build.zip BOTW-Mechanic-Recreation/Build
+            zip -r Build.zip BOTW-Mechanic-Recreation/build
+            ls
           
       - name: Release
         id: releasestep
