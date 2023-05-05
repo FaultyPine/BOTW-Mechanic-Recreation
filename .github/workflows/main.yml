@@ -61,8 +61,6 @@ jobs:
           
       - name: Zip build
         run: |
-            ls
-            find . -type d | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/| - \1/"
             zip -r Build.zip build
             ls
           
@@ -71,7 +69,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: Build.zip
-          tag_name: "Automatic Build"
+          tag_name: "${{ vars.GITHUB_SHA }}"
           
       - name: Discord post   
         uses: sarisia/actions-status-discord@v1
